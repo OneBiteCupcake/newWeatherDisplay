@@ -1,3 +1,4 @@
-.git
-.idea
+.git/
+.idea/
 *.iml
+__pycache__/
