@@ -1,9 +1,13 @@
-import os, pygame, time, requests, calendar
+import calendar
+import os
+import pygame
+import requests
+import time
 from datetime import datetime
+
 from weatherModel import weatherModel
 
 
-# Small LCD Display.
 def convertWindBearing(windBearing):
     if windBearing != '':
         if 337.5 < windBearing <= 360 or windBearing <= 22.5:
@@ -28,13 +32,14 @@ def convertWindBearing(windBearing):
         return "ERR"
 
 
+# Small LCD Display.
 class SmDisplay:
     screen = None
 
     ####################################################################
     def __init__(self):
         # print("in __init__")
-        "Initializes a new pygame screen using the framebuffer"
+        """Initializes a new pygame screen using the framebuffer"""
         # Based on "Python GUI in Linux frame buffer"
         # http://www.karoltomala.com/blog/?p=679
         disp_no = os.getenv("DISPLAY")
@@ -63,7 +68,6 @@ class SmDisplay:
 
         size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
         print("Framebuffer Size: %d x %d" % (size[0], size[1]))
-        # todo - figure out what's going on here
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
         # print("clear screen to start")
         # Clear the screen to start
@@ -104,43 +108,13 @@ class SmDisplay:
         self.tmdateYPos = 10  # Time & Date Y Position
         self.tmdateYPosSm = 18  # Time & Date Y Position Small
 
-        # print("small display")
-        """
-        # Small Display
-        self.xmax = 656 - 35
-        self.ymax = 416 - 5
-        self.scaleIcon = False		# No icon scaling needed.
-        self.iconScale = 1.0
-        self.subwinTh = 0.065		# Sub window text height
-        self.tmdateTh = 0.125		# Time & Date Text Height
-        self.tmdateSmTh = 0.075
-        self.tmdateYPos = 1		# Time & Date Y Position
-        self.tmdateYPosSm = 8		# Time & Date Y Position Small
-        """
-
-        # print("done in __init__")
-
     ####################################################################
     def __del__(self):
-        "Destructor to make sure pygame shuts down, etc."
-
-    ####################################################################
-    def getIcon(w, i):
-        try:
-            return int(w['forecasts'][i]['day']['icon'])
-        except:
-            return 29
+        """Destructor to make sure pygame shuts down, etc."""
 
     ####################################################################
     def UpdateWeather(self):
-        # print("in UpdateWeather")
-        # Use Weather.com for source data.
-        # cc = 'current_conditions'
-        # f = 'forecasts'
-
-        # This is where the majic happens.
-        # self.w = requests.get('https://api.darksky.net/forecast/c3942c89e1f9bd21d67991d4718d0b3f/39.615040,-104.753680')
-        # w = self.w
+        # This is where the magic happens.
         r = requests.get('https://api.darksky.net/forecast/c3942c89e1f9bd21d67991d4718d0b3f/39.615040,-104.753680')
         # print(r.status_code)
         # print(r.json())
@@ -341,7 +315,7 @@ class SmDisplay:
         th = self.subwinTh  # Text Height
         rpth = 0.100  # Rain Present Text Height
         gp = 0.065  # Line Spacing Gap
-        ro = 0.010 * xmax  # "Rain:" Text Window Offset winthin window.
+        # ro = 0.010 * xmax  # "Rain:" Text Window Offset winthin window.
         rpl = 5.95  # Rain percent line offset.
 
         font = pygame.font.SysFont(fn, int(ymax * th), bold=1)
@@ -384,14 +358,13 @@ class SmDisplay:
         rptxt = rpfont.render(self.rain[1] + '%', True, lc)
         (tx, ty) = rptxt.get_size()
         self.screen.blit(rptxt, (xmax * wx * 3 - tx / 2, ymax * (wy + gp * rpl)))
-        # todo
         icon = pygame.image.load(os.path.join(os.path.abspath(os.getcwd()), 'icons', str(self.icon[1]))).convert_alpha()
         (ix, iy) = icon.get_size()
         if self.scaleIcon:
             icon2 = pygame.transform.scale(icon, (int(ix * 1.5), int(iy * 1.5)))
             (ix, iy) = icon2.get_size()
             icon = icon2
-        if (iy < 90):
+        if iy < 90:
             yo = (90 - iy) / 2
         else:
             yo = 0
@@ -409,14 +382,13 @@ class SmDisplay:
         rptxt = rpfont.render(self.rain[2] + '%', True, lc)
         (tx, ty) = rptxt.get_size()
         self.screen.blit(rptxt, (xmax * wx * 5 - tx / 2, ymax * (wy + gp * rpl)))
-        # todo
         icon = pygame.image.load(os.path.join(os.path.abspath(os.getcwd()), 'icons', str(self.icon[2]))).convert_alpha()
         (ix, iy) = icon.get_size()
         if self.scaleIcon:
             icon2 = pygame.transform.scale(icon, (int(ix * 1.5), int(iy * 1.5)))
             (ix, iy) = icon2.get_size()
             icon = icon2
-        if (iy < 90):
+        if iy < 90:
             yo = (90 - iy) / 2
         else:
             yo = 0
@@ -434,14 +406,13 @@ class SmDisplay:
         rptxt = rpfont.render(self.rain[3] + '%', True, lc)
         (tx, ty) = rptxt.get_size()
         self.screen.blit(rptxt, (xmax * wx * 7 - tx / 2, ymax * (wy + gp * rpl)))
-        # todo
         icon = pygame.image.load(os.path.join(os.path.abspath(os.getcwd()), 'icons', str(self.icon[3]))).convert_alpha()
         (ix, iy) = icon.get_size()
         if self.scaleIcon:
             icon2 = pygame.transform.scale(icon, (int(ix * 1.5), int(iy * 1.5)))
             (ix, iy) = icon2.get_size()
             icon = icon2
-        if (iy < 90):
+        if iy < 90:
             yo = (90 - iy) / 2
         else:
             yo = 0
@@ -451,8 +422,3 @@ class SmDisplay:
         # Update the display
         pygame.display.update()
         # print("done in disp_weather")
-
-    ####################################################################
-    def sPrint(self, s, font, x, l, lc):
-        f = font.render(s, True, lc)
-        self.screen.blit(f, (x, self.ymax * 0.075 * l))

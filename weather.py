@@ -1,4 +1,5 @@
-import time, pygame
+import time
+import pygame
 from SmDisplay import SmDisplay
 
 

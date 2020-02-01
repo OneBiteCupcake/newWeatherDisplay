@@ -28,6 +28,6 @@ class weatherModel:
                 "\nwindGust: " + str(self.windGust) + \
                 "\nbarometer: " + str(self.barometer) + \
                 "\nhumidity: " + str(self.humidity) + \
-                "\nvisibiliity: " + str(self.visibility) + \
+                "\nvisibility: " + str(self.visibility) + \
                 "\nwindBearing: " + str(self.windBearing) + \
                 "\n"
