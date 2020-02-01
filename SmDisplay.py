@@ -1,18 +1,12 @@
-import os, pygame, time, requests
-from weatherModel import weatherModel
+import os, pygame, time, requests, calendar
 from datetime import datetime
-import calendar
-from pygame.locals import *
-
-'''new icons from http://darkskyapp.github.io/skycons/'''
+from weatherModel import weatherModel
 
 
 # Small LCD Display.
 def convertWindBearing(windBearing):
-    print("in convertWindBearing - windBearing: " + str(windBearing))
-
     if windBearing != '':
-        if 337.5 < windBearing <= 22.5:
+        if 337.5 < windBearing <= 360 or windBearing <= 22.5:
             return "N"
         elif 22.5 < windBearing <= 67.5:
             return "NE"
@@ -39,7 +33,7 @@ class SmDisplay:
 
     ####################################################################
     def __init__(self):
-        print("in __init__")
+        # print("in __init__")
         "Initializes a new pygame screen using the framebuffer"
         # Based on "Python GUI in Linux frame buffer"
         # http://www.karoltomala.com/blog/?p=679
@@ -47,7 +41,7 @@ class SmDisplay:
         if disp_no:
             print("X Display = {0}".format(disp_no))
 
-        print("getting ready to check drivers")
+        # print("getting ready to check drivers")
         # Check which frame buffer drivers are available
         # Start with fbcon since directfb hangs with composite output
         drivers = ['fbcon', 'directfb', 'svgalib']
@@ -63,7 +57,7 @@ class SmDisplay:
                 continue
             found = True
             break
-        print("done checking drivers")
+        # print("done checking drivers")
         if not found:
             raise Exception('No suitable video driver found!')
 
@@ -71,19 +65,19 @@ class SmDisplay:
         print("Framebuffer Size: %d x %d" % (size[0], size[1]))
         # todo - figure out what's going on here
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
-        print("clear screen to start")
+        # print("clear screen to start")
         # Clear the screen to start
         self.screen.fill((0, 0, 0))
-        print("font init")
+        # print("font init")
         # Initialise font support
         pygame.font.init()
         # Render the screen
         pygame.mouse.set_visible(0)
-        print("display update")
+        # print("display update")
         pygame.display.update()
         # for fontname in pygame.font.get_fonts():
         #        print fontname
-        print("initialize vars")
+        # print("initialize vars")
         self.temp = ''
         self.feels_like = 0
         self.wind_speed = 0
@@ -98,7 +92,7 @@ class SmDisplay:
         self.sunrise = '7:00 AM'
         self.sunset = '8:00 PM'
 
-        print("larger display")
+        # print("larger display")
         # Larger Display
         self.xmax = 800
         self.ymax = 600
@@ -110,7 +104,7 @@ class SmDisplay:
         self.tmdateYPos = 10  # Time & Date Y Position
         self.tmdateYPosSm = 18  # Time & Date Y Position Small
 
-        print("small display")
+        # print("small display")
         """
         # Small Display
         self.xmax = 656 - 35
@@ -124,7 +118,7 @@ class SmDisplay:
         self.tmdateYPosSm = 8		# Time & Date Y Position Small
         """
 
-        print("done in __init__")
+        # print("done in __init__")
 
     ####################################################################
     def __del__(self):
@@ -139,7 +133,7 @@ class SmDisplay:
 
     ####################################################################
     def UpdateWeather(self):
-        print("in UpdateWeather")
+        # print("in UpdateWeather")
         # Use Weather.com for source data.
         # cc = 'current_conditions'
         # f = 'forecasts'
@@ -165,29 +159,29 @@ class SmDisplay:
                                  currently.get("windBearing"))
             dailyData = r.json().get("daily").get('data')
 
-            print(model.__str__())
-            print(dailyData)
+            # print(model.__str__())
+            # print(dailyData)
             day1 = dailyData[0]
-            print(day1)
+            # print(day1)
 
             day2 = dailyData[1]
-            print(day2)
+            # print(day2)
 
             day3 = dailyData[2]
-            print(day3)
+            # print(day3)
 
             day4 = dailyData[3]
-            print(day4)
+            # print(day4)
 
             try:
                 if model.lastUpdate != self.wLastUpdate:
                     self.wLastUpdate = model.lastUpdate
-                    print("New Weather Update: " + str(self.wLastUpdate))
+                    # print("New Weather Update: " + str(self.wLastUpdate))
                     self.temp = str(int(model.temp)).lower()
                     self.feels_like = str(int(model.feelsLike)).lower()
                     self.wind_speed = str(int(model.windSpeed)).lower()
                     self.baro = str(round(model.barometer / 33.864, 2)).lower()
-                    print("model.windBearing: " + str(model.windBearing))
+                    # print("model.windBearing: " + str(model.windBearing))
                     self.wind_dir = convertWindBearing(model.windBearing)
                     self.humid = str(int(model.humidity * 100)).upper()
                     # self.vis = str(model.visibility).upper()
@@ -197,14 +191,14 @@ class SmDisplay:
                     self.day[1] = calendar.day_name[datetime.fromtimestamp(day2.get("time")).weekday()]
                     self.day[2] = calendar.day_name[datetime.fromtimestamp(day3.get("time")).weekday()]
                     self.day[3] = calendar.day_name[datetime.fromtimestamp(day4.get("time")).weekday()]
-                    print("self.day: " + str(self.day))
+                    # print("self.day: " + str(self.day))
                     # self.sunrise = w[f][0]['sunrise']
                     # self.sunset = w[f][0]['sunset']
                     self.icon[0] = day1.get("icon") + ".png"
                     self.icon[1] = day2.get("icon") + ".png"
                     self.icon[2] = day3.get("icon") + ".png"
                     self.icon[3] = day4.get("icon") + ".png"
-                    print('Icon Index: ', self.icon[0], self.icon[1], self.icon[2], self.icon[3])
+                    # print('Icon Index: ', self.icon[0], self.icon[1], self.icon[2], self.icon[3])
                     # print 'File: ', sd+icons[self.icon[0]]
                     self.rain[0] = str(int(day1.get("precipProbability") * 100))
                     self.rain[1] = str(int(day2.get("precipProbability") * 100))
@@ -230,7 +224,7 @@ class SmDisplay:
             # except ValueError:
             # print "ValueError -> Weather Error"
 
-            print("done in UpdateWeather")
+            # print("done in UpdateWeather")
             return True
 
     ####################################################################
