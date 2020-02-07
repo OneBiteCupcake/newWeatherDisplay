@@ -10,3 +10,5 @@ value, so needed to calculate which degree maps to what direction.
 Created a weatherModel class to hold data.
 
 I had to install haveged due to error with bad handshake.
+See this link:
+https://www.raspberrypi.org/forums/viewtopic.php?t=228971
