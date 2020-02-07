@@ -3,9 +3,10 @@ import os
 import pygame
 import requests
 import time
+import logging
 from datetime import datetime
-
 from weatherModel import weatherModel
+logging.basicConfig(filename='SmDisplay.log', level=logging.DEBUG, format='%(asctime)s %(message)s')
 
 
 def convertWindBearing(windBearing):
@@ -114,13 +115,16 @@ class SmDisplay:
 
     ####################################################################
     def UpdateWeather(self):
+        logging.info("in UpdateWeather")
         # This is where the magic happens.
         r = requests.get('https://api.darksky.net/forecast/c3942c89e1f9bd21d67991d4718d0b3f/39.615040,-104.753680')
         # print(r.status_code)
         # print(r.json())
+        logging.info("after making request")
         if r.status_code == 200:
             currently = r.json().get("currently")
-            print(currently)
+            # print(currently)
+            logging.info("response - currently: " + str(currently))
 
             model = weatherModel(datetime.fromtimestamp(currently.get("time")),
                                  currently.get("temperature"),
@@ -200,6 +204,8 @@ class SmDisplay:
 
             # print("done in UpdateWeather")
             return True
+        else:
+            logging.info("status_code: " + str(r.status_code))
 
     ####################################################################
     def disp_weather(self):
