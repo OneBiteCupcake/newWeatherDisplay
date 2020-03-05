@@ -117,10 +117,13 @@ class SmDisplay:
     def UpdateWeather(self):
         logging.info("in UpdateWeather")
         # This is where the magic happens.
-        r = requests.get('https://api.darksky.net/forecast/c3942c89e1f9bd21d67991d4718d0b3f/39.615040,-104.753680')
+        darkSkySecretKey = "insert darksky secret key here"
+        lat = "insert latitude here"
+        lon = "insert longitude here"
+        r = requests.get('https://api.darksky.net/forecast/' + darkSkySecretKey + '/' + lat + ',' + lon)
         # print(r.status_code)
         # print(r.json())
-        logging.info("after making request")
+        # logging.info("after making request")
         if r.status_code == 200:
             currently = r.json().get("currently")
             # print(currently)
@@ -206,6 +209,7 @@ class SmDisplay:
             return True
         else:
             logging.info("status_code: " + str(r.status_code))
+            logging.error("error message: " + str(r.json().get('error')))
 
     ####################################################################
     def disp_weather(self):

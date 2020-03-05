@@ -12,3 +12,11 @@ Created a weatherModel class to hold data.
 I had to install haveged due to error with bad handshake.
 See this link:
 https://www.raspberrypi.org/forums/viewtopic.php?t=228971
+
+2/8/2020
+Adding logic to check for internet connection prior to making API call.
+
+3/4/202
+Removing DarkSky api secret key and latitude/longitude pair. Apparently someone else was using the same secret
+key as me and was causing the daily limit to be exceeded. This way, users will have to supply their own key
+and latitude/longitude pair. Powered by: https://darksky.net/poweredby/
